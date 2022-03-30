@@ -1,0 +1,635 @@
+openapi: 3.0.2
+
+servers:
+  - description: Local Dev
+    url: http://localhost:5000
+  - description: Mock Service
+    url: https://mock.example.com/example
+  - description: Dev Api
+    url: https://api.dev.example.com/example
+  - description: Staging Api
+    url: https://api.staging.example.com/example
+  - description: Prod Api
+    url: https://api.example.com/example
+info:
+  title: Agrio Example Service Api
+  description: Agrio Example Services Documentation
+  contact:
+    email: admin@sophietech.com
+  version: "v1"
+
+externalDocs:
+  description: Documentation
+  url: https://doc-example.azurewebsites.net/example
+
+tags:
+  - name: Entities Tags
+    description: Entities Tags operations
+
+paths:
+  /entities:
+    post:
+      tags:
+        - Entities Tags
+      summary: Create new Entity
+      description: Create new Entity
+      operationId: createEntity
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+      requestBody:
+        description: Create Entity request
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityCreateModel"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityViewModel"
+          headers:
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
+            Location:
+              $ref: "#/components/headers/Location"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+    get:
+      tags:
+        - Entities Tags
+      summary: Get all Entities
+      description: Get all Entities
+      operationId: getEntities
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Term"
+        - $ref: "#/components/parameters/Sort"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityListModel"
+          headers:
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+  /entities/{entityId}:
+    get:
+      tags:
+        - Entities Tags
+      summary: Get one Entity
+      description: Get one Entity
+      operationId: getEntity
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+        - $ref: "#/components/parameters/EntityParameter"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityViewModel"
+          headers:
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+    patch:
+      tags:
+        - Entities Tags
+      summary: Update Entity
+      description: Update Entity
+      operationId: updateEntity
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+        - $ref: "#/components/parameters/EntityParameter"
+      requestBody:
+        description: Entity request for update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityUpdateModel"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+    delete:
+      tags:
+        - Entities Tags
+      summary: Delete Entity
+      description: Delete Entity
+      operationId: deleteEntity
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+        - $ref: "#/components/parameters/EntityParameter"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+
+components:
+  headers:
+    Location:
+      schema:
+        type: string
+        format: url
+      description: A link to created resource
+      example: 3
+    Content-Language:
+      schema:
+        type: string
+        enum:
+          - tr-TR
+          - en-US
+      description: the language(s) intended for the audience
+      example: tr-TR
+    X-RateLimit-Limit:
+      schema:
+        type: integer
+      description: Request limit per hour.
+    X-RateLimit-Remaining:
+      schema:
+        type: integer
+      description: The number of requests left for the time window.
+    X-RateLimit-Reset:
+      schema:
+        type: string
+        format: date-time
+      description: The UTC date/time at which the current rate limit window resets.
+
+  parameters:
+    DeviceHashHeaderParameter:
+      name: X-Device-Hash
+      in: header
+      required: true
+      schema:
+        type: string
+    AcceptLanguageParameter:
+      name: Accept-Language
+      in: header
+      required: true
+      schema:
+        type: string
+        enum:
+          - tr
+          - en
+          - tr-TR
+          - en-US
+      description: language(s) client is able to understand, and which locale variant is preferred
+      example: tr
+    Offset:
+      name: offset
+      in: query
+      description: The number of items to skip before starting to collect the result set.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    Limit:
+      name: limit
+      in: query
+      description: The numbers of items to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Term:
+      name: term
+      in: query
+      description:
+        Filter argument in which to retrieve the results. Basic text search on
+        relevant fields
+      schema:
+        type: string
+        default: ""
+    Sort:
+      name: sort
+      in: query
+      description:
+        Order in which to retrieve the results. Multiple sort criteria can not
+        be passed
+      schema:
+        type: string
+        default: ""
+    # Contract Parameters
+    EntityParameter:
+      name: entityId
+      in: path
+      schema:
+        type: string
+        format: uuid
+      required: true
+      description: Entity Id
+    EntityTypeParameter:
+      name: exampleType
+      in: path
+      schema:
+        type: string
+        enum:
+          - type1
+          - type2
+          - type3
+          - type4
+      required: true
+      description: Entity Type
+
+  responses:
+    BadRequest:
+      description: The specified resource was not valid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorViewModel"
+      headers:
+        Content-Language:
+          $ref: "#/components/headers/Content-Language"
+    Forbidden:
+      description: You are not allowed to take specified action
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorViewModel"
+      headers:
+        Content-Language:
+          $ref: "#/components/headers/Content-Language"
+    Conflict:
+      description: The specified resource already persisted
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorViewModel"
+      headers:
+        Content-Language:
+          $ref: "#/components/headers/Content-Language"
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorViewModel"
+      headers:
+        Content-Language:
+          $ref: "#/components/headers/Content-Language"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorViewModel"
+      headers:
+        Content-Language:
+          $ref: "#/components/headers/Content-Language"
+    NoContent:
+      description: No Content
+
+  securitySchemes:
+    bearer:
+      type: apiKey
+      name: Authorization
+      in: header
+      description:
+        'Authorization header using the Bearer scheme. Ex: "Authorization:
+        Bearer {token}"'
+
+  schemas:
+    # Common Models
+    DictionaryModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 15
+        name:
+          type: string
+          example: "some value"
+    ErrorViewModel:
+      type: object
+      properties:
+        code:
+          type: string
+          example: fC9LZX
+        title:
+          type: string
+          example: Invalid request parameters
+        detail:
+          type: string
+          example: The provided resource parameters are not valid.
+        errors:
+          type: array
+          items:
+            type: string
+            example: validation error message
+      required:
+        - code
+        - title
+        - detail
+
+    # Contract Models
+
+    EntityCreateModel:
+      type: object
+      properties:
+        stringField:
+          type: string
+          example: somestring
+          x-yaver-validators:
+            - type: required
+              message: err.required
+            - type: minLength
+              param: 2
+              message: err.minLength
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stringField
+        relationIdField:
+          type: integer
+          example: 1
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.relationField
+        dictionaryField:
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/DictionaryModel"
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.dictionaryField
+        integerField:
+          type: integer
+          example: 1
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.integerField
+        doubleField:
+          type: number
+          format: double
+          example: 10
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.doubleField
+        dateField:
+          type: string
+          format: date-time
+          example: "2020-02-20"
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: INPUT
+            inputType: date
+            placeholder: label.dateField
+        exampleType: #enum field
+          type: string
+          enum:
+            - type1
+            - type2
+            - type3
+            - type4
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.exampleType
+        exampleStatus:
+          type: boolean
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: CHECKBOX
+            placeholder: label.exampleStatus
+    EntityUpdateModel:
+      type: object
+      properties:
+        stringField:
+          type: string
+          example: somestring
+          x-yaver-validators:
+            - type: required
+              message: err.required
+            - type: minLength
+              param: 2
+              message: err.minLength
+        relationIdField:
+          type: integer
+          example: 1
+          x-yaver-validators:
+            - type: required
+              message: err.required
+        dictionaryField:
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/DictionaryModel"
+          x-yaver-validators:
+            - type: required
+              message: err.required
+        integerField:
+          type: integer
+          example: 1
+          x-yaver-validators:
+            - type: required
+              message: err.required
+        doubleField:
+          type: number
+          format: double
+          example: 10
+          x-yaver-validators:
+            - type: required
+              message: err.required
+        dateField:
+          type: string
+          format: date-time
+          example: "2020-02-20"
+          x-yaver-validators:
+            - type: required
+              message: err.required
+        exampleType: #enum field
+          type: string
+          enum:
+            - type1
+            - type2
+            - type3
+            - type4
+          x-yaver-validators:
+            - type: required
+              message: err.required
+        exampleStatus:
+          type: boolean
+          x-yaver-validators:
+            - type: required
+              message: err.required
+    EntityViewModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          x-yaver-ui:
+            type: INPUT
+            inputType: hidden
+        stringField:
+          type: string
+          example: somestring
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stringField
+        relationIdField:
+          type: integer
+          example: 1
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.relationField
+        dictionaryField:
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/DictionaryModel"
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.dictionaryField
+        integerField:
+          type: integer
+          example: 1
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.integerField
+        doubleField:
+          type: number
+          format: double
+          example: 10
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.doubleField
+        dateField:
+          type: string
+          format: date-time
+          example: "2020-02-20"
+          x-yaver-ui:
+            type: INPUT
+            inputType: date
+            placeholder: label.dateField
+        exampleType: #enum field
+          type: string
+          enum:
+            - type1
+            - type2
+            - type3
+            - type4
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.exampleType
+        exampleStatus:
+          type: boolean
+          x-yaver-ui:
+            type: CHECKBOX
+            placeholder: label.exampleStatus
+    EntityListItemModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          x-yaver-ui:
+            type: INPUT
+            inputType: hidden
+        stringField:
+          type: string
+          example: somestring
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stringField
+        relationNameField:
+          type: string
+          example: 1
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.relationField
+        integerField:
+          type: integer
+          example: 1
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.integerField
+    EntityListModel:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          description: Total items count
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityListItemModel"
+x-yaver:
+  resources:
+    - name: Entity
+      schemas:
+        create: EntityCreateModel
+        view: EntityViewModel
+        update: EntityUpdateModel
+        list: EntityListModel
+        list-item: EntityListItemModel
+      operations:
+        create: createEntity
+        get: getEntity
+        update: updateEntity
+        list: getEntities
+        delete: deleteEntity
