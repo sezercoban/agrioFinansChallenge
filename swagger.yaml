@@ -23,141 +23,96 @@ externalDocs:
   url: https://doc-example.azurewebsites.net/example
 
 tags:
-  - name: Entities Tags
-    description: Entities Tags operations
+  - name: Warehouses
+    description: Manage warehouses
+  - name: Products
+    description: Manage products
+  - name: Stocks
+    description: Manage stocks
 
 paths:
-  /entities:
-    post:
+  /warehouses:
+     get:
       tags:
-        - Entities Tags
-      summary: Create new Entity
-      description: Create new Entity
-      operationId: createEntity
+        - Warehouses
+      summary: Get all warehouses in all cities
+      description: Get all warehouses in all cities
+      operationId: getWarehouses
       parameters:
         - $ref: "#/components/parameters/AcceptLanguageParameter"
-      requestBody:
-        description: Create Entity request
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/EntityCreateModel"
-        required: true
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Limit"
       responses:
-        "201":
-          description: Created
+        "200":
+          description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EntityViewModel"
+                $ref: "#/components/schemas/WarehouseListModel"
           headers:
             Content-Language:
               $ref: "#/components/headers/Content-Language"
-            Location:
-              $ref: "#/components/headers/Location"
+        "204":
+          $ref: "#/components/responses/NoContent"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+      
+     post:
+      tags:
+        - Warehouses
+      summary: Create new warehouse
+      description: Create new warehouse
+      operationId: createWarehouse
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+      requestBody:
+        description: Create warehouse request
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WarehouseCreateModel"
+        required: true
+
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WarehouseListItemModel"
+          headers:
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
         "400":
           $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
         "409":
           $ref: "#/components/responses/Conflict"
       security:
         - bearer: []
       x-yaver-security-roles: superadmin,admin
+
+  /warehouses/{warehouseId}:
     get:
       tags:
-        - Entities Tags
-      summary: Get all Entities
-      description: Get all Entities
-      operationId: getEntities
+        - Warehouses
+      summary: Get warehouse by id
+      description: Get warehouse by id
+      operationId: getWarehouseById
       parameters:
         - $ref: "#/components/parameters/AcceptLanguageParameter"
-        - $ref: "#/components/parameters/Offset"
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Term"
-        - $ref: "#/components/parameters/Sort"
+        - $ref: "#/components/parameters/WarehouseId"
+        
       responses:
         "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EntityListModel"
+                $ref: "#/components/schemas/WarehouseListItemModel"
           headers:
             Content-Language:
               $ref: "#/components/headers/Content-Language"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-      security:
-        - bearer: []
-      x-yaver-security-roles: superadmin,admin
-  /entities/{entityId}:
-    get:
-      tags:
-        - Entities Tags
-      summary: Get one Entity
-      description: Get one Entity
-      operationId: getEntity
-      parameters:
-        - $ref: "#/components/parameters/AcceptLanguageParameter"
-        - $ref: "#/components/parameters/EntityParameter"
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/EntityViewModel"
-          headers:
-            Content-Language:
-              $ref: "#/components/headers/Content-Language"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-      security:
-        - bearer: []
-      x-yaver-security-roles: superadmin,admin
-    patch:
-      tags:
-        - Entities Tags
-      summary: Update Entity
-      description: Update Entity
-      operationId: updateEntity
-      parameters:
-        - $ref: "#/components/parameters/AcceptLanguageParameter"
-        - $ref: "#/components/parameters/EntityParameter"
-      requestBody:
-        description: Entity request for update
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/EntityUpdateModel"
-        required: true
-      responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-      security:
-        - bearer: []
-      x-yaver-security-roles: superadmin,admin
-    delete:
-      tags:
-        - Entities Tags
-      summary: Delete Entity
-      description: Delete Entity
-      operationId: deleteEntity
-      parameters:
-        - $ref: "#/components/parameters/AcceptLanguageParameter"
-        - $ref: "#/components/parameters/EntityParameter"
-      responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -166,6 +121,100 @@ paths:
         - bearer: []
       x-yaver-security-roles: superadmin,admin
 
+  /products:
+    post:
+      tags:
+        - Products
+      summary: Create product
+      description: Create 
+      operationId: createProduct
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+      requestBody:
+        description: Create product
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductCreateModel"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductViewModel"
+          headers:
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+
+  /warehouses/{warehouseId}/stocks:
+     get:
+      tags:
+        - Stocks
+      summary: Get stocks in warehouse
+      description: Get stocks in warehouse
+      operationId: getStocks
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+        - $ref: "#/components/parameters/WarehouseId"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StocksViewModel"
+          headers:
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+  /warehouses/{warehouseId}/movement:
+     post:
+      tags:
+        - Stocks
+      summary: Create stock movement
+      description: Create stock movement
+      operationId: createMovement
+      parameters:
+        - $ref: "#/components/parameters/AcceptLanguageParameter"
+        - $ref: "#/components/parameters/WarehouseId"
+      requestBody:
+        description: Create stock movement
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovementCreateModel"
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovementViewModel"
+          headers:
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - bearer: []
+      x-yaver-security-roles: superadmin,admin
+      
 components:
   headers:
     Location:
@@ -251,27 +300,15 @@ components:
       schema:
         type: string
         default: ""
-    # Contract Parameters
-    EntityParameter:
-      name: entityId
+
+    WarehouseId:
+      name: warehouseId
       in: path
       schema:
         type: string
         format: uuid
       required: true
-      description: Entity Id
-    EntityTypeParameter:
-      name: exampleType
-      in: path
-      schema:
-        type: string
-        enum:
-          - type1
-          - type2
-          - type3
-          - type4
-      required: true
-      description: Entity Type
+      description: Warehouse Id
 
   responses:
     BadRequest:
@@ -364,14 +401,285 @@ components:
         - title
         - detail
 
+    
+    CityModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Ankara
+
+    DistrictModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Cankaya
+
     # Contract Models
 
-    EntityCreateModel:
+    ProductViewModel:
       type: object
       properties:
-        stringField:
+        id:
           type: string
-          example: somestring
+          format: uuid
+          x-yaver-ui:
+            type: INPUT
+            inputType: hidden
+        stockCode:
+          type: string
+          example: STC1234567
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.stockCode
+        stockName:
+          type: string
+          example: Demo Product
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.stockName
+        unitSet:
+          type: string
+          example: Volume
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.unitSet
+        unit:
+          type: string
+          example: Kilogram
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.unit
+        barcode:
+          type: string
+          example: BRC1234567
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.barcode
+        description:
+          type: string
+          example: Description for product
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.description
+        purchasingPrice:
+          type: number
+          format: double
+          example: 10.50
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.purchasingPrice
+        sellingPrice:
+          type: number
+          format: double
+          example: 10.60
+          x-yaver-ui:
+            type: INPUT
+            placeholder: label.sellingPrice
+
+    ProductCreateModel: 
+      type: object
+      properties:
+        stockCode:
+          type: string
+          example: STC1234567
+          x-yaver-validators:
+            - type: required
+              message: err.required
+            - type: minLength
+              param: 10
+              message: err.minLength
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stockCode
+        stockName:
+          type: string
+          example: Demo Product
+          x-yaver-validators:
+            - type: required
+              message: err.required
+            - type: minLength
+              param: 3
+              message: err.minLength
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stockName
+        unitSet:
+          type: string
+          example: Volume
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stringField
+        unit:
+          type: string
+          example: Kilogram
+          x-yaver-validators:
+            - type: required
+              message: err.required
+            - type: minLength
+              param: 3
+              message: err.minLength
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stringField
+        barcode:
+          type: string
+          example: BRC1234567
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stringField
+        description:
+          type: string
+          example: Description for product
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stringField
+        purchasingPrice:
+          type: number
+          format: double
+          example: 10.50
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.doubleField
+        sellingPrice:
+          type: number
+          format: double
+          example: 10.60
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.doubleField
+
+    MovementCreateModel:
+      type: object
+      properties:
+        stockId:
+          type: string
+          format: uuid
+          example: ea0d6652-30d0-11ed-a261-0242ac120002
+          x-yaver-validators:
+            - type: required
+              message: err.required
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.stockId
+        direction:
+          type: string
+          enum:
+            - in
+            - out
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.direction
+        date:
+          type: string
+          format: date-time
+          example: "2020-02-20"
+          x-yaver-ui:
+            type: INPUT
+            inputType: date
+            placeholder: label.date
+        quantity:
+          type: number
+          format: double
+          example: 10
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.quantity
+        description:
+          type: string
+          example: Description for movement
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.description
+        referenceCode:
+          type: string
+          example: Reference code for movement
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.referenceCode
+
+    MovementViewModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          x-yaver-ui:
+            type: INPUT
+            inputType: 
+        warehouse:
+          type: object
+          $ref: "#/components/schemas/WarehouseListItemModel"
+        product:
+          type: object
+          $ref: "#/components/schemas/ProductViewModel"
+        direction:
+          type: string
+          enum:
+            - in
+            - out
+          x-yaver-ui:
+            type: SELECT
+            placeholder: label.direction
+        date:
+          type: string
+          format: date-time
+          example: "2020-02-20"
+          x-yaver-ui:
+            type: INPUT
+            inputType: date
+            placeholder: label.date
+        quantity:
+          type: number
+          format: double
+          example: 10
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.quantity
+        description:
+          type: string
+          example: Description for movement
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.description
+        referenceCode:
+          type: string
+          example: Reference code for movement
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.referenceCode
+
+    WarehouseCreateModel:
+      type: object
+      properties:
+        warehouseName:
+          type: string
+          example: Main Depo
           x-yaver-validators:
             - type: required
               message: err.required
@@ -381,8 +689,8 @@ components:
           x-yaver-ui:
             type: INPUT
             inputType: text
-            placeholder: label.stringField
-        relationIdField:
+            placeholder: label.warehouseName
+        cityId:
           type: integer
           example: 1
           x-yaver-validators:
@@ -390,18 +698,8 @@ components:
               message: err.required
           x-yaver-ui:
             type: SELECT
-            placeholder: label.relationField
-        dictionaryField:
-          type: object
-          allOf:
-            - $ref: "#/components/schemas/DictionaryModel"
-          x-yaver-validators:
-            - type: required
-              message: err.required
-          x-yaver-ui:
-            type: SELECT
-            placeholder: label.dictionaryField
-        integerField:
+            placeholder: label.cityId
+        districtId:
           type: integer
           example: 1
           x-yaver-validators:
@@ -409,206 +707,35 @@ components:
               message: err.required
           x-yaver-ui:
             type: SELECT
-            placeholder: label.integerField
-        doubleField:
-          type: number
-          format: double
-          example: 10
-          x-yaver-validators:
-            - type: required
-              message: err.required
-          x-yaver-ui:
-            type: INPUT
-            inputType: text
-            placeholder: label.doubleField
-        dateField:
+            placeholder: label.districtId
+        address:
           type: string
-          format: date-time
-          example: "2020-02-20"
-          x-yaver-validators:
-            - type: required
-              message: err.required
-          x-yaver-ui:
-            type: INPUT
-            inputType: date
-            placeholder: label.dateField
-        exampleType: #enum field
-          type: string
-          enum:
-            - type1
-            - type2
-            - type3
-            - type4
-          x-yaver-validators:
-            - type: required
-              message: err.required
-          x-yaver-ui:
-            type: SELECT
-            placeholder: label.exampleType
-        exampleStatus:
-          type: boolean
-          x-yaver-validators:
-            - type: required
-              message: err.required
-          x-yaver-ui:
-            type: CHECKBOX
-            placeholder: label.exampleStatus
-    EntityUpdateModel:
-      type: object
-      properties:
-        stringField:
-          type: string
-          example: somestring
+          example: Arjantin cad. 11/5
           x-yaver-validators:
             - type: required
               message: err.required
             - type: minLength
               param: 2
               message: err.minLength
-        relationIdField:
-          type: integer
-          example: 1
-          x-yaver-validators:
-            - type: required
-              message: err.required
-        dictionaryField:
-          type: object
-          allOf:
-            - $ref: "#/components/schemas/DictionaryModel"
-          x-yaver-validators:
-            - type: required
-              message: err.required
-        integerField:
-          type: integer
-          example: 1
-          x-yaver-validators:
-            - type: required
-              message: err.required
-        doubleField:
-          type: number
-          format: double
-          example: 10
-          x-yaver-validators:
-            - type: required
-              message: err.required
-        dateField:
-          type: string
-          format: date-time
-          example: "2020-02-20"
-          x-yaver-validators:
-            - type: required
-              message: err.required
-        exampleType: #enum field
-          type: string
-          enum:
-            - type1
-            - type2
-            - type3
-            - type4
-          x-yaver-validators:
-            - type: required
-              message: err.required
-        exampleStatus:
-          type: boolean
-          x-yaver-validators:
-            - type: required
-              message: err.required
-    EntityViewModel:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          x-yaver-ui:
-            type: INPUT
-            inputType: hidden
-        stringField:
-          type: string
-          example: somestring
           x-yaver-ui:
             type: INPUT
             inputType: text
-            placeholder: label.stringField
-        relationIdField:
-          type: integer
-          example: 1
-          x-yaver-ui:
-            type: SELECT
-            placeholder: label.relationField
-        dictionaryField:
-          type: object
-          allOf:
-            - $ref: "#/components/schemas/DictionaryModel"
-          x-yaver-ui:
-            type: SELECT
-            placeholder: label.dictionaryField
-        integerField:
-          type: integer
-          example: 1
-          x-yaver-ui:
-            type: SELECT
-            placeholder: label.integerField
-        doubleField:
-          type: number
-          format: double
-          example: 10
+            placeholder: label.address
+        description:
+          type: string
+          example: Base warehouse for city
+          x-yaver-validators:
+            - type: required
+              message: err.required
+            - type: minLength
+              param: 2
+              message: err.minLength
           x-yaver-ui:
             type: INPUT
             inputType: text
-            placeholder: label.doubleField
-        dateField:
-          type: string
-          format: date-time
-          example: "2020-02-20"
-          x-yaver-ui:
-            type: INPUT
-            inputType: date
-            placeholder: label.dateField
-        exampleType: #enum field
-          type: string
-          enum:
-            - type1
-            - type2
-            - type3
-            - type4
-          x-yaver-ui:
-            type: SELECT
-            placeholder: label.exampleType
-        exampleStatus:
-          type: boolean
-          x-yaver-ui:
-            type: CHECKBOX
-            placeholder: label.exampleStatus
-    EntityListItemModel:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          x-yaver-ui:
-            type: INPUT
-            inputType: hidden
-        stringField:
-          type: string
-          example: somestring
-          x-yaver-ui:
-            type: INPUT
-            inputType: text
-            placeholder: label.stringField
-        relationNameField:
-          type: string
-          example: 1
-          x-yaver-ui:
-            type: INPUT
-            inputType: text
-            placeholder: label.relationField
-        integerField:
-          type: integer
-          example: 1
-          x-yaver-ui:
-            type: SELECT
-            placeholder: label.integerField
-    EntityListModel:
+            placeholder: label.description
+
+    WarehouseListModel:
       type: object
       properties:
         totalCount:
@@ -617,19 +744,73 @@ components:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/EntityListItemModel"
+            $ref: "#/components/schemas/WarehouseListItemModel"
+
+    WarehouseListItemModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          x-yaver-ui:
+            type: INPUT
+            inputType: hidden
+        name:
+          type: string
+          example: Main Warehouse
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.name
+        city:
+          type: object
+          $ref: "#/components/schemas/CityModel"
+          
+        district:
+          type: object
+          $ref: "#/components/schemas/DistrictModel"
+    StocksViewModel:
+      type: object
+      properties:
+        warehouse:
+          type: object
+          $ref: "#/components/schemas/WarehouseListItemModel"
+        product:
+          type: object
+          $ref: "#/components/schemas/ProductViewModel"
+        quantity:
+          type: number
+          format: double
+          example: 10
+          x-yaver-ui:
+            type: INPUT
+            inputType: text
+            placeholder: label.quantity
+        
+    
+          
 x-yaver:
   resources:
-    - name: Entity
+    - name: Warehouses
       schemas:
-        create: EntityCreateModel
-        view: EntityViewModel
-        update: EntityUpdateModel
-        list: EntityListModel
-        list-item: EntityListItemModel
+        create: WarehouseCreateModel
+        view: WarehouseListModel
+        list: WarehouseListModel
+        list-item: WarehouseListItemModel
       operations:
-        create: createEntity
-        get: getEntity
-        update: updateEntity
-        list: getEntities
-        delete: deleteEntity
+        create: createWarehouse
+        get: getWarehouseById
+        list: getWarehouses
+    - name: Products
+      schemas:
+        create: ProductCreateModel
+        view: ProductViewModel
+      operations:
+        create: 
+    - Stocks:
+      schemas:
+        create: createMovement
+      operations:
+        create: createMovement
+    
+
