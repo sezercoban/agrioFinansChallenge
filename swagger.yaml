@@ -155,7 +155,7 @@ paths:
         - bearer: []
       x-yaver-security-roles: superadmin,admin
 
-  /warehouses/{warehouseId}/stocks:
+  /stocks/warehouse/{warehouseId}:
      get:
       tags:
         - Stocks
@@ -180,7 +180,7 @@ paths:
       security:
         - bearer: []
       x-yaver-security-roles: superadmin,admin
-  /warehouses/{warehouseId}/movement:
+  /stocks/warehouse/{warehouseId}/movement:
      post:
       tags:
         - Stocks
